@@ -1,12 +1,10 @@
 from discord.ext import commands
+from Global import globals
+from Function import SheetFn
 
-class EventCog(commands.Cog):
+class MB_Join(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Bot is ready')
 
     # @commands.Cog.listener() #當有訊息時
     # async def on_message(self, message):
@@ -23,17 +21,18 @@ class EventCog(commands.Cog):
 
     @commands.Cog.listener() #當有成員加入時
     async def on_member_join(self, member):
-        print(member)
+        print(f"加入新成員: {member}")
+        SheetFn.AddNewMemberDataFromGlobals(member.id)
         guild = member.guild
         channel = guild.system_channel
-        await channel.send("歡迎 {member.name} 的加入...!")
-
-    @commands.Cog.listener() #當有成員離開時
-    async def on_member_remove(self, member):
-        guild = member.guild
-        channel = guild.system_channel
-        await channel.send("緬懷 {member.name} 的離開...")
-    # 其他事件
+        welcome_message = (
+            f"歡迎 {member.name} 的加入...!\n"
+            "想要查看Roku的頻道請點擊<:Roku:1108454569157079090>的表情符號!!\n"
+            "想要查看123的頻道請點擊<:Roku:1108454569157079090>的表情符號!!\n"
+        )
+        db_string = "f'" + globals.Welcome_Message + "'"
+        temp = eval(db_string)
+        await channel.send(temp.format(member=member))
 
 async def setup(bot):
-    await bot.add_cog(EventCog(bot))
+    await bot.add_cog(MB_Join(bot))
