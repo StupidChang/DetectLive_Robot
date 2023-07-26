@@ -22,16 +22,17 @@ if __name__ == "__main__":
             'Cogs.Commands.MemberData',
             'Cogs.Commands.RequireData',
             'Cogs.Commands.GetChannelID',
-            'Cogs.Commands.Level',
+            'Cogs.Commands.Rank',
             'Cogs.Commands.webhook',
             'Cogs.Commands.SetWelcomeMessage', 
             'Cogs.Commands.SetReactionRole',
             'Cogs.Commands.DeleteReactionRole', 
             'Cogs.Commands.Twitch', 
-            'Cogs.Commands.Twitch_wb',
+            'Cogs.Commands.Youtube',
             'Cogs.Commands.Help', 
             'Cogs.Commands.SetStreamerData',
             'Cogs.Commands.AddExperience',
+            'Cogs.Commands.Title',
 
             'Cogs.Events.on_message', 
             'Cogs.Events.SetRole', 
@@ -49,9 +50,10 @@ if __name__ == "__main__":
     @commands.has_permissions(administrator=True)
     async def 開始運作(ctx):
         if not globals.isStart:
-            await ctx.invoke(globals.Client.get_command('Start_webhook'))
+            await ctx.invoke(globals.Client.get_command('ServerRun'))
             await ctx.invoke(globals.Client.get_command('StartBackUp'))
-            await ctx.invoke(globals.Client.get_command('runTwitch'))
+            await ctx.invoke(globals.Client.get_command('TwitchSub'))
+            await ctx.invoke(globals.Client.get_command('YoutubeSub'))
         else:
             await ctx.send("[系統指令] - 已開啟!")
 
@@ -133,15 +135,20 @@ if __name__ == "__main__":
     async def on_ready():
         print('目前登入身份：', Client.user)
 
-        game = discord.Game('管理DetectLive中...\n 擔任要職 - [管家]')
+        # game = discord.Streaming(
+        #     name='🖨️登記委託人每日簽到經驗值',
+        #     url="https://www.youtube.com/watch?v=EfJ-6N9P4tw"
+        # )
+        game = discord.Game(name='🖨️登記委託人每日簽到經驗值', type=discord.ActivityType.playing, url="https://thumbor.4gamers.com.tw/glyMcY5GKTbu0WF58EBPU_Kmp_s=/adaptive-fit-in/1200x1200/filters:no_upscale():extract_cover():format(jpeg):quality(85)/https%3A%2F%2Fugc-media.4gamers.com.tw%2Fpuku-prod-zh%2Fanonymous-story%2F0aa184d9-0109-40d0-9356-bdc751240fba.jpg")
         await Client.change_presence(status=discord.Status.idle, activity = game)
 
-        SheetFn.GetRole()  #從Google Sheet取得目前的表情設定並儲存
-        SheetFn.GetServerID()
-        SheetFn.GetTagLiveChannel()
-        SheetFn.GetWelcomeMessage()
-        SheetFn.GetStreamerLiveData()
-        SheetFn.GetMemberDataFromSheet()
+        SheetFn.SheetFunction.GetRole()  #從Google Sheet取得目前的表情設定並儲存
+        SheetFn.SheetFunction.GetServerID()
+        SheetFn.SheetFunction.GetTagLiveChannel()
+        SheetFn.SheetFunction.GetWelcomeMessage()
+        SheetFn.SheetFunction.GetStreamerLiveData()
+        SheetFn.SheetFunction.GetMemberDataFromSheet()
+        SheetFn.SheetFunction.GetTitle()
         # print(globals.Roles)
 
         # print(Client)

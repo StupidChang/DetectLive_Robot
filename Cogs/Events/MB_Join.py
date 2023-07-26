@@ -22,7 +22,7 @@ class MB_Join(commands.Cog):
     @commands.Cog.listener() #當有成員加入時
     async def on_member_join(self, member):
         print(f"加入新成員: {member}")
-        SheetFn.AddNewMemberDataFromGlobals(member.id)
+        SheetFn.AddNewMemberData2Globals(member.id)
         guild = member.guild
         channel = guild.system_channel
         welcome_message = (

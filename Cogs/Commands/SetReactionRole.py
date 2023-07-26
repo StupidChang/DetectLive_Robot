@@ -11,7 +11,7 @@ class SetReactionRole(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def SetReactionRole(self, ctx, *args):
         if(len(args) == 3):
-            await SheetFn.InsertRole(args[0], args[1], args[2])
+            await SheetFn.SheetFunction.InsertRole(args[0], args[1], args[2])
 
 async def setup(bot):
     await bot.add_cog(SetReactionRole(bot)) 

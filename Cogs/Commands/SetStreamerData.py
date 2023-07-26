@@ -8,11 +8,11 @@ class SetStreamerData(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(aliases=[])
+    @commands.command(aliases=['SRD'])
     @commands.has_permissions(administrator=True)
     async def SetStreamerData(self, ctx, *args):
         if(len(args) == 5):
-            await SheetFn.SetStreamerLiveData(args[0], args[1], args[2], args[3], args[4])
+            await SheetFn.SheetFunction.SetStreamerLiveData(args[0], args[1], args[2], args[3], args[4])
     
 async def setup(bot):
     await bot.add_cog(SetStreamerData(bot)) 

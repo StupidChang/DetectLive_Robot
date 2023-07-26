@@ -7,8 +7,8 @@ from quart import Quart, websocket, request
 from discord_webhook import DiscordWebhook
 from quart import make_response
 import json
-from googleapiclient.discovery import build
 import asyncio
+from Function import SheetFn
 
 class webhook(commands.Cog):
     def __init__(self, bot):
@@ -17,20 +17,19 @@ class webhook(commands.Cog):
     # 將 Flask 伺服器的路由設置為機器人的命令
     @commands.command(aliases=['STWH'])
     @commands.has_permissions(administrator=True)
-    async def Start_webhook(self, ctx):
+    async def ServerRun(self, ctx):
         app = Quart(__name__)
 
-        try:
-            with open("./FlaskServer/config.yaml") as f:
-                config = yaml.load(f, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            print("Unable to load config file: 'config.yaml'")
-            print("Exiting...")
-            exit(1)
+        # try:
+        #     with open("./FlaskServer/config.yaml") as f:
+        #         config = yaml.load(f, Loader=yaml.FullLoader)
+        # except FileNotFoundError:
+        #     print("Unable to load config file: 'config.yaml'")
+        #     print("Exiting...")
+        #     exit(1)
 
         @app.route("/feed", methods=["GET", "POST"])
         async def feed():
-            youtube = build('youtube', 'v3', developerKey="AIzaSyBdXrPPQN2BEelDvWsW_h9Rxtwi0eas79I")
            
             """Accept and parse requests from YT's pubsubhubbub.
             https://developers.google.com/youtube/v3/guides/push_notifications
@@ -46,7 +45,7 @@ class webhook(commands.Cog):
                 xml_dict = xmltodict.parse(await request.data)
                 print(xml_dict)
                 if("entry" in xml_dict["feed"]):
-                    channel_id = xml_dict["feed"]["entry"]["yt:channelId"]
+                    # channel_id = xml_dict["feed"]["entry"]["yt:channelId"]
                     videoo_id = xml_dict["feed"]["entry"]["yt:videoId"]
                     # if config["channel_ids"] != [] and channel_id not in config["channel_ids"]:
                         # return "", 403
@@ -56,8 +55,9 @@ class webhook(commands.Cog):
                     print(f"New video URL: {video_url}")
 
                     Name = xml_dict["feed"]["entry"]["author"]["name"]
+                    # Name = xml_dict["feed"]["entry"]["author"]["name"]
 
-                    await asyncio.sleep(2)
+                    # await asyncio.sleep(2)
 
                     # live_streams_response = youtube.search().list(
                     #     channelId=channel_id,
@@ -65,35 +65,37 @@ class webhook(commands.Cog):
                     #     eventType='live',
                     #     type='video'
                     # ).execute()
+                    
+                    await SheetFn.SheetFunction.SearchYoutubeStreamStatus(Name, video_url, videoo_id, ctx)
+                    # print(f"response = {response}")
+                    # # print(f"live_streams_response = {live_streams_response}")
+                    # if 'items' in response:
+                    #     video_info = response['items'][0]
+                    #     if 'liveStreamingDetails' in video_info:
+                    #         if 'actualEndTime' not in video_info['liveStreamingDetails']:
+                    #             if 'actualStartTime' in video_info['liveStreamingDetails']:
+                    #                 channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
+                    #                 for row in globals.StreamerLiveStatu:
+                    #                     # print(row[0])
+                    #                     # print(Name)
+                    #                     # print(row[0] == Name)
+                    #                     if row[0] == Name:
+                    #                         TagMessage = (
+                    #                                         f"🔴 {Name}直播中...\n"
+                    #                                         f"<@&{row[3]}> 正在直播!!\n"
+                    #                                         f"{video_url}\n"
+                    #                                     )
+                    #                         await channel2.send(TagMessage)
+                    #             else:
+                    #                 globals.VideoStatus[videoo_id] = {}
 
-                    response = youtube.videos().list(
-                        part='liveStreamingDetails',
-                        id=videoo_id
-                    ).execute()
 
-                    print(f"response = {response}")
-                    # print(f"live_streams_response = {live_streams_response}")
-                    if 'items' in response:
-                        video_info = response['items'][0]
-                        if 'liveStreamingDetails' in video_info:
-                            if 'actualEndTime' not in video_info['liveStreamingDetails']:
                     # if live_streams_response['items']:
                         # for item in live_streams_response['items']:
                             # if(item['id']['videoId'] == videoo_id):
                                 # print(f"頻道名稱: {Name}")
                                 # await ctx.send(f"New video URL: {video_url}")
-                                channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
-                                for row in globals.StreamerLiveStatu:
-                                    # print(row[0])
-                                    # print(Name)
-                                    # print(row[0] == Name)
-                                    if row[0] == Name:
-                                        TagMessage = (
-                                                        f"🔴 {Name}直播中...\n"
-                                                        f"<@&{row[3]}> 正在直播!!\n"
-                                                        f"{video_url}\n"
-                                                    )
-                                        await channel2.send(TagMessage)
+                                    
 
                     # channel = ctx.guild.system_channel
                     # await channel.send(TagMessage)
@@ -142,8 +144,8 @@ class webhook(commands.Cog):
             data_dict = json.loads(data_str)
             # xml_dict = xmltodict.parse(xml_data)
             print(f"Twitch Data - {data_dict}")
-            print(f"Twitch {data_dict['event']['type']}")
-            print(f"Twitch {data_dict['event']['broadcaster_user_name']}")
+            # print(f"Twitch {data_dict['event']['type']}")
+            # print(f"Twitch {data_dict['event']['broadcaster_user_name']}")
             # print(f"Twitch Challenge - {data_dict['challenge']}")
             # print(f"Twitch Request - {request}")
             if 'challenge' in data_dict:
@@ -182,3 +184,5 @@ class webhook(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(webhook(bot)) 
+
+

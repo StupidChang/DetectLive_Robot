@@ -34,9 +34,6 @@ class Level(Enum):
 global FlaskServer
 FlaskServer = None
 
-global DetectLiveMemberData
-DetectLiveMemberData = {}
-
 global Response_Code 
 Response_Code = None
 
@@ -48,3 +45,21 @@ Client = None
 
 global isStart
 isStart = False
+
+global VideoStatus
+VideoStatus = {}
+
+global WillBeDelete
+WillBeDelete = []
+
+global SetNewMemberTitle
+SetNewMemberTitle = {}
+
+global DetectLiveTitleData
+DetectLiveTitleData = {}
+
+global DetectLiveMemberData
+DetectLiveMemberData = {}
+
+global NgrokLocal
+NgrokLocal = ''

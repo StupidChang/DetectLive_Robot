@@ -8,29 +8,28 @@ class Help(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def 使用教學(self, ctx, *args):
-        embed = discord.Embed(
-            title="指令列表",
-            url="https://realdrewdata.medium.com/",
-            # description= "指令使用",
-            color=0x5bbcff
-        )
-        embed.add_field(name="[ SetReactionRole ]:", value="設定表情領取身分組\n+SetSetReactionRole 訊息ID 表情名稱 身分組ID", inline=False)
-        embed.add_field(name="[ DeleteReactionRole ]:", value="刪除表情領取身分組\n+DeleteReactionRole 訊息ID 表情名稱 身分組ID", inline=False)
-        embed.add_field(name="[ CheckMemberData ]:", value="伺服器使用者資料遺失於資料庫中，利用此指令新增至資料庫", inline=False)
-        embed.add_field(name="[ SetWelcomeMessage ]:", value="設定伺服器歡迎訊息\n+SetWelcomeMessage 訊息", inline=False)
-        embed.add_field(name="[ RequireData ]:", value="重新請求資料庫資料至程式，手動修改資料後須重新請求，如Tag頻道、直播主資料等", inline=False)
-        #setting footer
-        embed.set_footer(text="身分組教學")
-        #setting image
-        embed.set_image(url="https://img.moegirl.org.cn/common/d/db/BA_Noa_ML.png")
-        #setting thumbnail
-        embed.set_thumbnail(url="https://img.moegirl.org.cn/common/d/db/BA_Noa_ML.png")
-        #Setting timestamp
-        embed.timestamp = datetime.datetime.now()
-        #adding fields
-        # await ctx.send(embed=embed)
-        await ctx.send("'''這是一個測試檔案'''")
+    async def 管管使用教學(self, ctx, *args):
+        message = ("```markdown\n"
+                   + "#核心指令:\n"
+                   + "└ +Load\n   ╙ 載入檔案。\n"
+                   + "└ +unLoad\n   ╙ 卸載檔案。\n"
+                   + "└ +reLoad\n   ╙ 重載檔案。\n"
+                   + "└ +CheckCogs\n   ╙ 確認預設載入檔案。\n"
+                   + "\n#表情相關:\n"
+                   + "└ +SetReactionRole\n   ╙ 設定表情領取身分組 [+SetSetReactionRole 訊息ID 表情名稱 身分組ID]。\n"
+                   + "└ +DeleteReactionRole\n   ╙ 刪除表情領取身分組 [+DeleteReactionRole 訊息ID 表情名稱 身分組ID]。\n"
+                   + "\n#伺服器資料相關:\n"
+                   + "└ +CheckMemberData\n   ╙ 伺服器使用者資料遺失於資料庫中，利用此指令新增至資料庫。\n"
+                   + "└ +SetWelcomeMessage\n   ╙ 設定伺服器歡迎訊息，請利用\\n換行 [+SetWelcomeMessage 訊息]。\n"
+                   + "└ +RequireData\n   ╙ 重新請求資料庫資料至程式，手動修改資料後須重新請求，如Tag頻道、直播主資料等。\n"
+                   + "└ +SetStreamerData\n   ╙ 新增一筆直播主資料至資料表中。\n"
+                   + "└ +YoutubeSub\n   ╙ 新增直播主資料後請使用此指令向Youtube註冊。\n"
+                   + "└ +TwitchSub\n   ╙ 新增直播主資料後請使用此指令向Twitch註冊。\n"
+                   + "\n#特殊用途:\n"
+                   + "└ +AddExperience\n   ╙ 增加自己的經驗值至1000。\n"
+                   + "└ +GetChannelID\n   ╙ 輸入某個頻道的影片ID後返回頻道的Youtube ID\n"
+                   + "└ +開始運作\n   ╙ 開啟機器人後，必須使用此指令執行 開啟伺服器、啟動備份、向Twitch註冊直播主、向Youtube註冊直播主。```")
+        await ctx.send(message)
 
 async def setup(bot):
     await bot.add_cog(Help(bot))

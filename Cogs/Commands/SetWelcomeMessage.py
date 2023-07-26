@@ -12,7 +12,7 @@ class SetWelcomeMessage(commands.Cog):
     async def SetWelcomeMessage(self, ctx, *args):
         if(len(args) == 1):
             print(args[0])
-            await SheetFn.SetWelcomeMessage(args[0])
+            await SheetFn.SheetFunction.SetWelcomeMessage(args[0])
         else:
             await ctx.send("請輸入設定訊息!")
 

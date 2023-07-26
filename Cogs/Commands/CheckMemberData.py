@@ -23,7 +23,7 @@ class CheckMemberData(commands.Cog):
 
                 if globals.DetectLiveMemberData.get(str(member.id)) is None:
                     await ctx.send(f"- {member.name} 不存在於資料中，新增 {member.name} 於資料中... ")
-                    SheetFn.AddNewMemberDataFromGlobals(member.id)
+                    SheetFn.SheetFunction.AddNewMemberData2Globals(member.id)
                     # await ctx.send(f"- 新增 {member.name} 於資料中... ")
                     # for data in globals.DetectLiveMemberData[1:]:
                     #     print(f"目前的資料為 {data}")
@@ -36,7 +36,7 @@ class CheckMemberData(commands.Cog):
                     await ctx.send(f"- {member.name} 已存在於資料中... ")
 
         # print(globals.DetectLiveMemberData)
-        await SheetFn.SetMemberData2Sheet()
+        await SheetFn.SheetFunction.SetMemberData2Sheet()
 
 async def setup(bot):
     await bot.add_cog(CheckMemberData(bot))

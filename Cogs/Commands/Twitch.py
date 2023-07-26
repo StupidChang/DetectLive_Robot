@@ -149,7 +149,7 @@ class TwitchWebsocket():
                     },
                     'transport': {
                         'method': 'webhook',
-                        'callback': "https://cba8-220-132-121-211.ngrok-free.app/TwitchSub",
+                        'callback': f"{globals.NgrokLocal}/TwitchSub",
                         'secret': "ywnavcgqvcezlkb9l11im3c9692l2h"
                     }
                 }
@@ -175,9 +175,6 @@ class TwitchWebsocket():
 
                 print(f"Twitch - 註冊結果為 {resp}")
         
-        
-
-        
 
 class Twitch(commands.Cog):
     def __init__(self, bot):
@@ -185,11 +182,11 @@ class Twitch(commands.Cog):
     
     @commands.command(aliases=[''])
     @commands.has_permissions(administrator=True)
-    async def runTwitch(self, ctx):
+    async def TwitchSub(self, ctx):
         globals.Twitchapp = TwitchWebsocket()
         if(globals.Twitchapp.get_app_access_token()):
             globals.Twitchapp.Webhook_sub()
-            await ctx.send("[系統指令] - 已向Twitch Webhook註冊直播主")
+            await ctx.send("[系統指令] - 已向Twitch註冊直播主")
 
         # globals.Twitchapp.get_twitch_code()
 

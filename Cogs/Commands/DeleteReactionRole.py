@@ -8,9 +8,10 @@ class DeleteReactionRole(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def DeleteReactionRole(self, ctx, *args):
         if(len(args) == 3):
-            SheetFn.DeleteRole(args[0], args[1], args[2])
+            SheetFn.SheetFunction.DeleteRole(args[0], args[1], args[2])
 
 async def setup(bot):
     await bot.add_cog(DeleteReactionRole(bot))
