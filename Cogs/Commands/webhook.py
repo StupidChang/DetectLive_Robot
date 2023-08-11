@@ -43,7 +43,7 @@ class webhook(commands.Cog):
 
             try:
                 xml_dict = xmltodict.parse(await request.data)
-                print(xml_dict)
+                # print(xml_dict)
                 if("entry" in xml_dict["feed"]):
                     # channel_id = xml_dict["feed"]["entry"]["yt:channelId"]
                     videoo_id = xml_dict["feed"]["entry"]["yt:videoId"]
@@ -54,8 +54,8 @@ class webhook(commands.Cog):
                     video_url = xml_dict["feed"]["entry"]["link"]["@href"]
                     print(f"New video URL: {video_url}")
 
-                    Name = xml_dict["feed"]["entry"]["author"]["name"]
                     # Name = xml_dict["feed"]["entry"]["author"]["name"]
+                    ChannelId = xml_dict["feed"]["entry"]["yt:channelId"]
 
                     # await asyncio.sleep(2)
 
@@ -65,8 +65,8 @@ class webhook(commands.Cog):
                     #     eventType='live',
                     #     type='video'
                     # ).execute()
-                    
-                    await SheetFn.SheetFunction.SearchYoutubeStreamStatus(Name, video_url, videoo_id, ctx)
+                    if videoo_id not in globals.VideoStatus:
+                        await SheetFn.SheetFunction.SearchYoutubeStreamStatus(ChannelId, video_url, videoo_id, ctx)
                     # print(f"response = {response}")
                     # # print(f"live_streams_response = {live_streams_response}")
                     # if 'items' in response:
@@ -175,7 +175,7 @@ class webhook(commands.Cog):
             return await response
 
         self.bot.loop.create_task(app.run_task())
-        await ctx.send("[系統指令] - 已啟動Quart Server")
+        await ctx.send("[系統訊息] - 已啟動Quart Server")
 
     # 在 Flask 伺服器啟動後，可以使用機器人來停止它
     # @commands.command()

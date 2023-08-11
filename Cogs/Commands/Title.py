@@ -22,9 +22,8 @@ class Title(commands.Cog):
                     else:
                         await SheetFn.SheetFunction.SendTitle(args[1], 30, ctx)
 
-            if(args[0] == "Search"):
-                if(args[1] != None):
-                    await ctx.send(f"此稱號 {args[1]} 的編號為: {SheetFn.SearchTitleNumber(args[1])}")
+            if(args[0] == "List"):
+                await SheetFn.SheetFunction.SearchTitleNumber(ctx)
 
 async def setup(bot):
     await bot.add_cog(Title(bot))

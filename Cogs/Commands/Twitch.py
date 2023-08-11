@@ -186,7 +186,7 @@ class Twitch(commands.Cog):
         globals.Twitchapp = TwitchWebsocket()
         if(globals.Twitchapp.get_app_access_token()):
             globals.Twitchapp.Webhook_sub()
-            await ctx.send("[系統指令] - 已向Twitch註冊直播主")
+            await ctx.send("[系統訊息] - 已向Twitch註冊直播主")
 
         # globals.Twitchapp.get_twitch_code()
 

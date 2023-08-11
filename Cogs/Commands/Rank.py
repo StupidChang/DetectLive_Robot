@@ -63,7 +63,7 @@ class Level(commands.Cog):
 
         else:
             embed = discord.Embed(
-                title="DetectLive資料卡",
+                title=f"DetectLive的資料卡!",
                 description=f"➤介紹: \n{globals.DetectLiveMemberData[str(ctx.message.author.id)]['LevelMessage']}",
                 color=0x5bbcff  
             )

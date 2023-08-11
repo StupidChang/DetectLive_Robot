@@ -328,7 +328,7 @@ class SheetFunction(commands.Cog):
         globals.DetectLiveMemberData[str(ID)]['Exp'] += AddExp
 
     # 搜尋影片是否有直播
-    async def SearchYoutubeStreamStatus(Name, VideoURL, VideoID, ctx):
+    async def SearchYoutubeStreamStatus(ChannelID, VideoURL, VideoID, ctx):
         youtube = build('youtube', 'v3', developerKey="AIzaSyBdXrPPQN2BEelDvWsW_h9Rxtwi0eas79I")
         response = youtube.videos().list(
             part='liveStreamingDetails',
@@ -344,9 +344,9 @@ class SheetFunction(commands.Cog):
                     if 'actualStartTime' in video_info['liveStreamingDetails']:
                         channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
                         for row in globals.StreamerLiveStatu:
-                            if row[0] == Name:
+                            if row[1] == ChannelID:
                                 TagMessage = (
-                                                f"🔴 {Name}直播中...\n"
+                                                f"🔴 {row[0]}直播中...\n"
                                                 f"<@&{row[3]}> 正在直播!!\n"
                                                 f"{VideoURL}\n"
                                             )
@@ -355,14 +355,15 @@ class SheetFunction(commands.Cog):
                     else:
                         if VideoID not in globals.VideoStatus:
                             globals.VideoStatus[VideoID] = {
-                                "Name":Name,
+                                # "Name":row[0],
+                                "ChannelID":ChannelID,
                                 "VideoURL":VideoURL
                             }
                             channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
                             for row in globals.StreamerLiveStatu:
-                                if row[0] == Name:
+                                if row[1] == ChannelID:
                                     TagMessage = (
-                                                    f"🔴 {Name}來拉...!\n"
+                                                    f"🔴 {row[0]}發布了一個新的直播拉...!\n"
                                                     f"<@&{row[3]}> 即將開始直播!!\n"
                                                     f"{VideoURL}\n"
                                                 )
@@ -380,11 +381,12 @@ class SheetFunction(commands.Cog):
             # print(len(non_empty_rows_data))
             for row in non_empty_rows_data:
                 print(row)
-                globals.DetectLiveTitleData[row[0]] = {
-                    'label':row[1],
-                    'emoji':row[2],
-                    'description':row[3]
-                }
+                if(row[0] != "稱號編號"):
+                    globals.DetectLiveTitleData[row[0]] = {
+                        'label':row[1],
+                        'emoji':row[2],
+                        'description':row[3]
+                    }
             print(globals.DetectLiveTitleData)
         except Exception as e:
             print(e)
@@ -444,8 +446,9 @@ class SheetFunction(commands.Cog):
         except Exception as e:
             print(e)
 
-    async def SearchTitleNumber(Searchlabel):
-        print()
+    async def SearchTitleNumber(ctx):
+        for row in globals.DetectLiveTitleData:
+            await ctx.send(f"({globals.DetectLiveTitleData[row]['emoji']} {globals.DetectLiveTitleData[row]['label']}) 的稱號編號為 {row} 號。")
         
     async def UpdateMemberTitleNumber(TitleNumber):
             found = False

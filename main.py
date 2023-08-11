@@ -33,6 +33,7 @@ if __name__ == "__main__":
             'Cogs.Commands.SetStreamerData',
             'Cogs.Commands.AddExperience',
             'Cogs.Commands.Title',
+            'Cogs.Commands.SetNgrokLocal',
 
             'Cogs.Events.on_message', 
             'Cogs.Events.SetRole', 
@@ -44,25 +45,28 @@ if __name__ == "__main__":
     @commands.has_permissions(administrator=True)
     async def test(ctx):
         print(ctx.message)
-        await ctx.send("[系統指令] - 機器人運作中...!")
+        await ctx.send("[系統訊息] - 機器人運作中...!")
 
     @Client.command()  
     @commands.has_permissions(administrator=True)
     async def 開始運作(ctx):
-        if not globals.isStart:
-            await ctx.invoke(globals.Client.get_command('ServerRun'))
-            await ctx.invoke(globals.Client.get_command('StartBackUp'))
-            await ctx.invoke(globals.Client.get_command('TwitchSub'))
-            await ctx.invoke(globals.Client.get_command('YoutubeSub'))
+        if globals.NgrokLocal == "":
+            await ctx.send("[系統警告] - 請優先設定完成NgrokLocal")
         else:
-            await ctx.send("[系統指令] - 已開啟!")
+            if not globals.isStart:
+                await ctx.invoke(globals.Client.get_command('ServerRun'))
+                await ctx.invoke(globals.Client.get_command('StartBackUp'))
+                # await ctx.invoke(globals.Client.get_command('TwitchSub'))
+                await ctx.invoke(globals.Client.get_command('YoutubeSub'))
+            else:
+                await ctx.send("[系統訊息] - 已開啟!")
 
 
     @Client.command()  
     @commands.has_permissions(administrator=True)
     async def load(ctx, *args):
         if(len(args) == 0):
-            await ctx.send("[系統指令] - 請輸入參數! 範例:+load all")
+            await ctx.send("[系統訊息] - 請輸入參數! 範例:+load all")
         else:
             if(args[0] == "all"):
                 for Cog in Cogs:
@@ -74,8 +78,8 @@ if __name__ == "__main__":
 
             elif( len(args) > 0):   
                 try:
-                    await Client.load_extension(f"Cogs.{args[0]}")
-                    await ctx.send(f"[  {args[0]}  ]已載入至函式庫...!")
+                    await Client.load_extension(f"{args[0]}")
+                    await ctx.send(f"[系統訊息] - [  {args[0]}  ]已載入至函式庫...!")
                 except Exception as e:
                     await ctx.send(e)
                 
@@ -83,7 +87,7 @@ if __name__ == "__main__":
     @commands.has_permissions(administrator=True)
     async def unload(ctx, *args):
         if(len(args) == 0):
-            await ctx.send("[系統指令] - 請輸入參數! 範例:+unload something")
+            await ctx.send("[系統訊息] - 請輸入參數! 範例:+unload something")
         else:
             if(args[0] == "all"):
                 for Cog in Cogs:
@@ -91,12 +95,12 @@ if __name__ == "__main__":
                         await Client.unload_extension(Cog)
                     except Exception as e:
                         await ctx.send(e)
-                await ctx.send("[系統指令] - 已解除所有函式庫...!")
+                await ctx.send("[系統訊息] - 已解除所有函式庫...!")
 
             elif( len(args) > 0):
                 try:
-                    await Client.unload_extension(f"Cogs.{args[0]}")
-                    await ctx.send(f"[系統指令] - [  {args[0]}  ]已解除於函式庫...!")
+                    await Client.unload_extension(f"{args[0]}")
+                    await ctx.send(f"[系統訊息] - [  {args[0]}  ]已解除於函式庫...!")
                 except Exception as e:
                     await ctx.send(e)
 
@@ -104,7 +108,7 @@ if __name__ == "__main__":
     @commands.has_permissions(administrator=True)
     async def reload(ctx, *args):
         if(len(args) == 0):
-            await ctx.send("[系統指令] - 請輸入參數! 範例:+reload something")
+            await ctx.send("[系統訊息] - 請輸入參數! 範例:+reload something")
         else:
             if(args[0] == "all"):
                 for Cog in Cogs:
@@ -112,12 +116,12 @@ if __name__ == "__main__":
                         await Client.reload_extension(Cog)
                     except Exception as e:
                         await ctx.send(e)
-                await ctx.send("[系統指令] - 已進行函式庫重載...!")
+                await ctx.send("[系統訊息] - 已進行函式庫重載...!")
 
             elif( len(args) > 0):
                 try:
-                    await Client.reload_extension(f"Cogs.{args[0]}")
-                    await ctx.send(f"[系統指令] - [  {args[0]}  ]已重載入函式庫...!")
+                    await Client.reload_extension(f"{args[0]}")
+                    await ctx.send(f"[系統訊息] - [  {args[0]}  ]已重載入函式庫...!")
                 except Exception as e:
                     await ctx.send(e)
 

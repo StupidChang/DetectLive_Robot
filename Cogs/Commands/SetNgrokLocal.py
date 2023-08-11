@@ -9,8 +9,8 @@ class SetNgrokLocal(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def SetNgrokLocal(self, ctx, *args):
-        print(args[0])
         globals.NgrokLocal = args[0]
+        await ctx.send(f"[系統訊息] - 已成功設定NgrokLocal為 {args[0]}")
 
 async def setup(bot):
     await bot.add_cog(SetNgrokLocal(bot))

@@ -1,0 +1,5 @@
+webhook_url: https://discord.com/api/webhooks/1108671811190788148/2aU55mtaomZGcRaYF45u7CCKaYH_oyZ-adcXGtdI93ZQlTZmoo_BgWPy0_NOSGCrJKSx
+
+channel_ids: ['UC-hM6YJuNYVAmUWxeIr9FeA', 'UCHsx4Hqa-1ORjQTh9TYDhww', 'UC1DCedRgGHBdm81E1llLhOQ', 'UCdn5BQ06XqgXoAxIhbqw5Rg', 'UCoSrY_IQQVpmIRZ9Xf-y93g', 'UCCzUftO8KOVkV4wQG1vkUvg']
+
+message_prefix: A new video has just gone live!

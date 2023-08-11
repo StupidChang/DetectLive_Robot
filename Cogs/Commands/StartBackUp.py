@@ -35,7 +35,7 @@ class StartBackUp(commands.Cog):
         if(self.run):
             print("開始確認影片直播狀態")
             for VideoID in globals.VideoStatus:
-                await SheetFn.SheetFunction.SearchYoutubeStreamStatus(globals.VideoStatus[VideoID]['Name'], globals.VideoStatus[VideoID]['VideoURL'], VideoID, self.ctx)
+                await SheetFn.SheetFunction.SearchYoutubeStreamStatus(globals.VideoStatus[VideoID]['ChannelID'], globals.VideoStatus[VideoID]['VideoURL'], VideoID, self.ctx)
             for DeleteVideoID in globals.WillBeDelete:
                 print(DeleteVideoID)
                 del globals.VideoStatus[DeleteVideoID]
