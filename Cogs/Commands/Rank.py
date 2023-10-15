@@ -16,15 +16,19 @@ class Level(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=['rank'])
     async def Rank(self, ctx, *args):
         if(len(args) > 0):
-            if(args[0] == "set"):
-                if(args[1] != None):
-                    globals.DetectLiveMemberData[str(ctx.message.author.id)]['LevelMessage'] = args[1]
+            if(args[0] == "Set"):
+                if(len(args) > 1):
+                    Temp = ""
+                    for i in range(1, len(args)):
+                        Temp += args[i]
+                        Temp += "\n"
+                    globals.DetectLiveMemberData[str(ctx.message.author.id)]['LevelMessage'] = Temp
                 else:
                     await ctx.send("[系統訊息] - 請在set後設定想要在介紹中顯示的文字訊息")
-            if(args[0] == "title"):
+            if(args[0] == "Title"):
                 # df1 = True if test1_role in interaction.user.roles else False
                 # df2 = True if test2_role in interaction.user.roles else False  
                 numbers = globals.DetectLiveMemberData[str(ctx.message.author.id)]['alltitle'].split(',')
@@ -63,8 +67,8 @@ class Level(commands.Cog):
 
         else:
             embed = discord.Embed(
-                title=f"DetectLive的資料卡!",
-                description=f"➤介紹: \n{globals.DetectLiveMemberData[str(ctx.message.author.id)]['LevelMessage']}",
+                title=f"DetectLive的資料卡!     -     **[{globals.DetectLiveMemberData[str(ctx.message.author.id)]['title']}]**",
+                description=f"**➤自我介紹:** \n{globals.DetectLiveMemberData[str(ctx.message.author.id)]['LevelMessage']}",
                 color=0x5bbcff  
             )
 
@@ -81,15 +85,33 @@ class Level(commands.Cog):
             progressbar += "]  "
             progressbar += f"({globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp']} / 1000)"
 
+            # title =  globals.DetectLiveMemberData[str(ctx.message.author.id)]['title'].split()    
+
             embed.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.display_avatar.url)
-            embed.add_field(name="📥 [加入伺服器日期]:", value=globals.DetectLiveMemberData[str(ctx.message.author.id)]['JoinServerDate'], inline=True)
-            embed.add_field(name="⏱️ [已連續簽到]:", value=f"{globals.DetectLiveMemberData[str(ctx.message.author.id)]['SignInDate']} 天", inline=True) 
-            embed.add_field(name="🪪 [目前等級]:", value=globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level'], inline=False)
-            embed.add_field(name="🗡️ [經驗值]:", value=progressbar, inline=True) #globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp']
-            embed.add_field(name="📜 [活動參加狀態]:", value=globals.DetectLiveMemberData[str(ctx.message.author.id)]['Activity'], inline=False) #globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp']
-            embed.add_field(name="🎉 [稱號]:", value=globals.DetectLiveMemberData[str(ctx.message.author.id)]['title'], inline=False)   
-            embed.set_footer(text='[=- DetectLive所屬製作 -=]')
-            embed.set_thumbnail(url="https://img.moegirl.org.cn/common/d/db/BA_Noa_ML.png")
+            embed.add_field(name="📥 [加入伺服器日期]:", value=f"```{globals.DetectLiveMemberData[str(ctx.message.author.id)]['JoinServerDate']}```", inline=True)
+            embed.add_field(name="⏱️ [已連續簽到]:", value=f"```{globals.DetectLiveMemberData[str(ctx.message.author.id)]['SignInDate']} 天```", inline=True) 
+            embed.add_field(name="🪪 [目前等級]:", value=f"```{globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']}```", inline=False)
+            embed.add_field(name="🗡️ [經驗值]:", value=f"```{progressbar}```", inline=False) #globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp']
+            embed.add_field(name="📑 [活動參加狀態]:", value=f"```{globals.DetectLiveMemberData[str(ctx.message.author.id)]['Activity']}```", inline=True) #globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp']
+            # embed.add_field(name="✂️ [剪刀石頭布勝利次數]:", value=f"```0```", inline=True)
+            embed.add_field(name="✂️ [剪刀石頭布勝利次數]:", value=f"```{globals.DetectLiveMemberData[str(ctx.message.author.id)]['MoraWinNumber']}```", inline=True)
+            embed.add_field(name="📜 [目前任務]:", value=f"```尚未擁有任務```", inline=False)
+            
+            # embed.add_field(name="🎉 [稱號]:", value=f"**>>>> {globals.DetectLiveMemberData[str(ctx.message.author.id)]['title']} <<<<**", inline=False)   
+            # embed.add_field(name="🎉 [稱號]:", value=f"**>>>> {title[0]} {title[1]} <<<<**", inline=False)
+            embed.set_footer(text='[=- DetectLive所屬製作 -=]', icon_url='https://media.discordapp.net/attachments/1087810566342578198/1121099154077274204/logo-04.png?width=910&height=910')
+
+            if int(globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']) >= 50:
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1109183684898205768/1142029121464045619/4.png")
+            elif int(globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']) >= 15:
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1109183684898205768/1142029121258537042/3.png")
+            elif int(globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']) >= 5:
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1109183684898205768/1142029121053007952/2.png")
+            else:
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1109183684898205768/1142029120792956980/1.png")    
+
+            if int(globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']) >= 15:
+                embed.set_image(url=f"{globals.DetectLiveMemberData[str(ctx.message.author.id)]['image_url']}")
             embed.timestamp = datetime.datetime.now()
 
             view = discord.ui.View()
@@ -142,7 +164,7 @@ class Level(commands.Cog):
                         channel = interaction.channel
                         globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level'] += 1
                         globals.DetectLiveMemberData[str(ctx.message.author.id)]['Exp'] -= 1000
-                        message = f"[系統訊息] - {interaction.user.name} 已提升至{globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']}啦♡(*´∀｀*)人(*´∀｀*)♡"
+                        message = f"[系統訊息] - {interaction.user.name} 已提升至等級 {globals.DetectLiveMemberData[str(ctx.message.author.id)]['Level']} 啦♡(*´∀｀*)人(*´∀｀*)♡"
                         await channel.send(message)
 
                         button2.disabled = True
@@ -169,6 +191,10 @@ class Level(commands.Cog):
             async def button3_callback(interaction: discord.Interaction):
                 if interaction.user.id == ctx.message.author.id:
                     await interaction.response.defer()
+
+                    channel = interaction.channel
+                    message = f"[系統訊息] - 目前還沒有活動喔!"
+                    await channel.send(message)
                     # Textinput = discord.ui.TextInput(label="HI", placeholder="請輸入簡介",style= discord.TextStyle.short)
                     # ModalView.add_item(Textinput)
                     # A = MyModal()

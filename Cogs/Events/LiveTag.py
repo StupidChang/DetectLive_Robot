@@ -18,14 +18,7 @@ class LiveTag(commands.Cog):
         liveChannel = guild.get_channel(int(globals.LiveChannelID)) # 利用ID取的伺服器中的頻道
         # print("globals.LiveChannelID為  " + globals.LiveChannelID)
         youtube = build('youtube', 'v3', developerKey="AIzaSyBdXrPPQN2BEelDvWsW_h9Rxtwi0eas79I")
-        # 获取当前时间
-        current_time = datetime.datetime.now()
 
-        # 設置 Discord Webhook 的 URL
-        webhook_url = "YOUR_WEBHOOK_URL"
-
-        # 建立 Webhook 物件
-        webhook = discord.Webhook.from_url(webhook_url, adapter=discord.RequestsWebhookAdapter())
         # 搜尋直播主的頻道 ID
         # channels_response = youtube.videos().list(
         #     id='X9zw0QF12Kc',

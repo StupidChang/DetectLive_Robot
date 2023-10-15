@@ -175,18 +175,54 @@ class TwitchWebsocket():
 
                 print(f"Twitch - 註冊結果為 {resp}")
         
+    def cancel_all_subscriptions(self):
+        print("Twitch - 開始取消所有訂閱")
+        
+        url = "https://api.twitch.tv/helix/eventsub/subscriptions"
+        
+        headers = {
+            "Authorization": f"Bearer {self.app_auth_token}",
+            "Client-ID": "qz2npqic9tn8sgk5giw96cl5xb6ivk"  # 替换为你的客户端 ID
+        }
+        
+        response = requests.get(url, headers=headers)
+        subscriptions = response.json()
+        
+        print(subscriptions)
+
+        for subscription in subscriptions['data']:
+            subscription_id = subscription['id']
+            
+            cancel_url = f"https://api.twitch.tv/helix/eventsub/subscriptions?id={subscription_id}"
+            cancel_response = requests.delete(cancel_url, headers=headers)
+            
+            if cancel_response.status_code == 204:
+                print(f"Cancelled subscription {subscription_id}")
+            else:
+                print(f"Failed to cancel subscription {subscription_id}")
+        
+        print("Twitch - 所有訂閱已取消")
 
 class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(aliases=[''])
+    @commands.command()
     @commands.has_permissions(administrator=True)
     async def TwitchSub(self, ctx):
-        globals.Twitchapp = TwitchWebsocket()
+        if globals.Twitchapp == None:
+            globals.Twitchapp = TwitchWebsocket()
         if(globals.Twitchapp.get_app_access_token()):
+            globals.Twitchapp.cancel_all_subscriptions()
             globals.Twitchapp.Webhook_sub()
             await ctx.send("[系統訊息] - 已向Twitch註冊直播主")
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def TwitchCancelSub(self, ctx):
+        if(globals.Twitchapp.get_app_access_token()):
+            globals.Twitchapp.cancel_all_subscriptions()
+            await ctx.send("[系統訊息] - Twitch所有訂閱已取消")
 
         # globals.Twitchapp.get_twitch_code()
 

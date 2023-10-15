@@ -63,7 +63,7 @@ class webhook(commands.Cog):
                     #     channelId=channel_id,
                     #     part='snippet',
                     #     eventType='live',
-                    #     type='video'
+                    #     type='video'  
                     # ).execute()
                     if videoo_id not in globals.VideoStatus:
                         await SheetFn.SheetFunction.SearchYoutubeStreamStatus(ChannelId, video_url, videoo_id, ctx)
@@ -80,7 +80,7 @@ class webhook(commands.Cog):
                     #                     # print(Name)
                     #                     # print(row[0] == Name)
                     #                     if row[0] == Name:
-                    #                         TagMessage = (
+                    #                         TagMessage = (                             
                     #                                         f"🔴 {Name}直播中...\n"
                     #                                         f"<@&{row[3]}> 正在直播!!\n"
                     #                                         f"{video_url}\n"
@@ -161,14 +161,15 @@ class webhook(commands.Cog):
                     if(row[2] == data_dict['event']['broadcaster_user_login']):
                         # print(f"globals.LiveChannelID: {globals.LiveChannelID}")
 
-                        channel = ctx.guild.get_channel(int(globals.LiveChannelID))
-
+                        # channel = ctx.guild.get_channel(int(globals.LiveChannelID))
+                        
+                        channel = ctx.guild.get_channel(int(row[5]))
                         TagMessage = (
-                                        f"🔴 {data_dict['event']['broadcaster_user_name']}直播中...\n"
-                                        f"<@&{row[4]}> 正在直播!!\n"
+                                        f"🔴 {data_dict['event']['broadcaster_user_name']} 直播中...\n"
+                                        f"<@&{row[4]}> <@&1065083845487108096> 直播開始了!! 快來看看吧!!\n"
                                         f"https://www.twitch.tv/{data_dict['event']['broadcaster_user_login']}\n"
                                     )
-                        
+
                         await channel.send(TagMessage)
 
             response = make_response("OK")

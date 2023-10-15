@@ -36,7 +36,7 @@ class Youtube(commands.Cog):
                 except requests.exceptions.RequestException as e:
                     print(e)
                     
-        await ctx.send("[系統指令] - 已向Youtube註冊直播主")
+        await ctx.send("[系統訊息] - 已向Youtube註冊直播主")
 
 async def setup(bot):
     await bot.add_cog(Youtube(bot))

@@ -19,8 +19,10 @@ if __name__ == "__main__":
     Cogs = ['Cogs.Commands.TestLoading',
             'Cogs.Commands.StartBackUp',
             'Cogs.Commands.CheckMemberData',
+            'Cogs.Commands.MessageHere',
             'Cogs.Commands.MemberData',
-            'Cogs.Commands.RequireData',
+            'Cogs.Commands.SaveData',
+            'Cogs.Commands.RequireSettingData',
             'Cogs.Commands.GetChannelID',
             'Cogs.Commands.Rank',
             'Cogs.Commands.webhook',
@@ -34,12 +36,16 @@ if __name__ == "__main__":
             'Cogs.Commands.AddExperience',
             'Cogs.Commands.Title',
             'Cogs.Commands.SetNgrokLocal',
+            'Cogs.Commands.SetSignIn',
+            'Cogs.Commands.Mora',
 
             'Cogs.Events.on_message', 
             'Cogs.Events.SetRole', 
             'Cogs.Events.RemoveRole', 
-            'Cogs.Events.MB_Join', 
-            'Cogs.Events.MB_Leave'] # , 'Cogs.Events.LiveTag'
+            'Cogs.Events.MB_Join' 
+            #'Cogs.Events.MB_Leave',
+            #'Cogs.Events.LiveTag'
+            ]
 
     @Client.command()  
     @commands.has_permissions(administrator=True)
@@ -56,8 +62,10 @@ if __name__ == "__main__":
             if not globals.isStart:
                 await ctx.invoke(globals.Client.get_command('ServerRun'))
                 await ctx.invoke(globals.Client.get_command('StartBackUp'))
-                # await ctx.invoke(globals.Client.get_command('TwitchSub'))
+                await ctx.invoke(globals.Client.get_command('StartCheckYoutubeStream'))
+                await ctx.invoke(globals.Client.get_command('TwitchSub'))
                 await ctx.invoke(globals.Client.get_command('YoutubeSub'))
+                await ctx.invoke(globals.Client.get_command('SetSignIn'))
             else:
                 await ctx.send("[系統訊息] - 已開啟!")
 
@@ -153,6 +161,7 @@ if __name__ == "__main__":
         SheetFn.SheetFunction.GetStreamerLiveData()
         SheetFn.SheetFunction.GetMemberDataFromSheet()
         SheetFn.SheetFunction.GetTitle()
+        SheetFn.SheetFunction.GetExperienceChannel()
         # print(globals.Roles)
 
         # print(Client)
@@ -162,15 +171,17 @@ if __name__ == "__main__":
             # print(f"[{guild}]") #米兔醬 的伺服器
             # print(f"[{guild.me}]") #TestRobot#7918
             channel = guild.system_channel
-            await channel.send("DetectLive最可愛的管家機器人已上線(ヾﾉ･ω･`)!")
+            TestChannel = guild.get_channel(int(globals.LiveChannelID))
+            # await channel.send("DetectLive最可愛的管家機器人已上線(ヾﾉ･ω･`)!")
+            # await TestChannel.send("DetectLive最可愛的管家機器人已上線(ヾﾉ･ω･`)!")
             
-            if(guild.name == "米兔醬 的伺服器"):
-                for Cog in Cogs:
-                    try:
-                        await Client.load_extension(Cog)
-                    except Exception as e:
-                        await channel.send(e)
-                await channel.send("已載入所有函式庫...!")
+            # if(guild.name == "米兔醬 的伺服器"):
+            for Cog in Cogs:
+                try:
+                    await Client.load_extension(Cog)
+                except Exception as e:
+                    print()
+            await TestChannel.send("已載入所有函式庫...!")
 
             #以下為在所有伺服器中的第一個有權限的文字頻道輸出，不是預設頻道
             # for channel in guild.text_channels: #getting only text channels

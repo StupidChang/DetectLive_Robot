@@ -7,7 +7,7 @@ class SetReactionRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['SRR'])
+    @commands.command()
     @commands.has_permissions(administrator=True)
     async def SetReactionRole(self, ctx, *args):
         if(len(args) == 3):

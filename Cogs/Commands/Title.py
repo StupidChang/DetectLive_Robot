@@ -17,10 +17,10 @@ class Title(commands.Cog):
 
             if(args[0] == "Send"):
                 if(args[1] != None):
-                    if(args[2] != None):
+                    if(len(args) >= 3):
                         await SheetFn.SheetFunction.SendTitle(args[1], args[2], ctx)
                     else:
-                        await SheetFn.SheetFunction.SendTitle(args[1], 30, ctx)
+                        await SheetFn.SheetFunction.SendTitle(args[1], int(30), ctx)
 
             if(args[0] == "List"):
                 await SheetFn.SheetFunction.SearchTitleNumber(ctx)

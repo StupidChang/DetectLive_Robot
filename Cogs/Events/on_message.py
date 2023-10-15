@@ -12,10 +12,17 @@ class on_message(commands.Cog):
             return  
         elif message.content.startswith(self.bot.command_prefix):
             return
-        try:
-            globals.DetectLiveMemberData[str(message.author.id)]['Exp'] += 1
-        except:
-            print()
+        
+        # print(message.channel.id)
+        # print(globals.ExperienceChannelID)
+        # print(str(message.channel.id) in globals.ExperienceChannelID)
+        if str(message.channel.id) in globals.ExperienceChannelID:
+            try:
+                globals.DetectLiveMemberData[str(message.author.id)]['Exp'] += 1
+                print("[系統訊息] - 增加成員經驗值成功")
+            except:
+                print("[系統訊息] - 增加成員經驗值錯誤")
+
         await self.bot.process_commands(message)
 
     # @commands.Cog.listen('on_message') #當有訊息時

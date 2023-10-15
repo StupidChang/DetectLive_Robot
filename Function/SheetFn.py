@@ -18,8 +18,12 @@ class SheetFunction(commands.Cog):
     async def Function(self, ctx, *args):
         print()
 
+    def Mytest(self):
+        print("test2")
+
     # 直播主的資料-------------------------------------------------------------------------------------------------------------
     def GetStreamerLiveData():
+        globals.StreamerLiveStatu = []
         gc = pygsheets.authorize(service_file='./GoogleSheetKey/trusty-fuze-322909-7d29b50ea92c.json')
         sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/180OzY1HVQw1ucU3w5cqJsHSX5LzbVkonYhfTRzelRJo/edit#gid=0')
 
@@ -27,10 +31,10 @@ class SheetFunction(commands.Cog):
 
         StreamerSetting = sheet.worksheet_by_title("直播設定")
         all_rows_data = StreamerSetting.get_all_values()
-        StreamerLiveStatu = [row[:5] for row in all_rows_data[1:] if any(cell.strip() for cell in row)]
+        StreamerLiveStatu = [row[:6] for row in all_rows_data[1:] if any(cell.strip() for cell in row)]
         for row in StreamerLiveStatu:
-            print(f"[Name = {row[0]}, YTChannelID = {row[1]}, TwitchChannelAddress = {row[2]}, TwitchChannelID = {row[3]}, 身分組 = {row[4]}]")
-            value = [row[0], row[1], row[2], row[3], row[4]]
+            print(f"[Name = {row[0]}, YTChannelID = {row[1]}, TwitchChannelAddress = {row[2]}, TwitchChannelID = {row[3]}, 身分組 = {row[4]}, 頻道 = {row[5]}]")
+            value = [row[0], row[1], row[2], row[3], row[4], row[5]]
             globals.StreamerLiveStatu.append(value)
 
     async def SetStreamerLiveData(YTname, YTID, TwitchAddress, TwitchID, RoleID, ctx):
@@ -171,6 +175,30 @@ class SheetFunction(commands.Cog):
             if(row[0] == "歡迎訊息設定:"):
                 globals.Welcome_Message = row[1]
 
+    def GetExperienceChannel():
+        gc = pygsheets.authorize(service_file='./GoogleSheetKey/trusty-fuze-322909-7d29b50ea92c.json')
+        sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/180OzY1HVQw1ucU3w5cqJsHSX5LzbVkonYhfTRzelRJo/edit#gid=0')
+
+        SystemSetting = sheet.worksheet_by_title("系統設定")
+        all_rows_data = SystemSetting.get_all_values()
+
+        search_keyword = "經驗值頻道:"
+        result = None
+
+        # 遍歷資料列，尋找符合搜尋關鍵字的欄位
+        for row in all_rows_data:
+            if row[0] == search_keyword:
+                result = row[1]  # 取得對應的值
+                break
+
+        if result is not None:
+            result = result.split(', ')
+            for row in result:
+                # print(result)
+                globals.ExperienceChannelID[row] = {}
+            print(globals.ExperienceChannelID)
+        # else:
+        #     print("找不到符合的搜尋結果")
 
     # |||經驗值系統|||
     #將Google Sheet的資料抓取製程式內
@@ -186,7 +214,7 @@ class SheetFunction(commands.Cog):
         # last_column_data = MemberData.rows 
 
         all_rows_data = MemberData.get_all_values()
-        non_empty_rows_data = [row[:10] for row in all_rows_data if any(cell.strip() for cell in row)]
+        non_empty_rows_data = [row[:13] for row in all_rows_data if any(cell.strip() for cell in row)]
         print("目前成員資料:")
         # print(non_empty_rows_data)
         for row in non_empty_rows_data:
@@ -200,7 +228,10 @@ class SheetFunction(commands.Cog):
                     "SignInDate": int(row[6]),
                     "Activity": row[7],
                     "title" : row[8],
-                    "alltitle" : row[9]
+                    "alltitle" : row[9],
+                    "image_url" : row[10],
+                    "MoraWinNumber" : int(row[11]),
+                    "Mission" : row[12]
                 }
 
         print(globals.DetectLiveMemberData)
@@ -210,14 +241,55 @@ class SheetFunction(commands.Cog):
         # print(non_empty_rows_count)
 
     #執行此程式後，將把執行程式內的MemberData回傳至Google Sheet中
-    async def SetMemberData2Sheet(): 
+    async def CheckMemberData2Sheet(): 
         gc = pygsheets.authorize(service_file='./GoogleSheetKey/trusty-fuze-322909-7d29b50ea92c.json')
         sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/180OzY1HVQw1ucU3w5cqJsHSX5LzbVkonYhfTRzelRJo/edit#gid=0')
 
         MemberData = sheet.worksheet_by_title("成員資料")
         SheetData = MemberData.get_all_values()
         non_empty_rows_data = [row[:1] for row in SheetData if any(cell.strip() for cell in row)]
-        print("[備份系統] - 正在執行確認是否有新增成員中...")
+        print("[系統訊息] - 正在執行確認是否有新增成員中...")
+        print(non_empty_rows_data)
+        TempData = {}
+        
+        for row in non_empty_rows_data:
+            if row[0] != "ID":
+                TempData[row[0]] = {}
+        print(f"TempData = {TempData}")
+
+        data_to_append = []
+        for row in globals.DetectLiveMemberData.items():
+            if TempData.get(str(row[0])) is None:
+                # print(row)
+                data_list = [row[0], row[1]["Level"], row[1]["Exp"], row[1]["Signln"], row[1]["LevelMessage"], row[1]["JoinServerDate"], row[1]["SignInDate"], row[1]["Activity"], row[1]["title"], row[1]["alltitle"], row[1]["image_url"], row[1]["MoraWinNumber"], row[1]["Mission"]]
+                print(f"data_list = {data_list}")
+                data_to_append.append(data_list)
+        
+        if len(data_to_append) != 0:
+            try:
+                await MemberData.append_table(data_to_append)
+            except:
+                print("[備份系統] - 發生錯誤")
+
+        print("[系統訊息] - 結束執行")
+        # for row in non_empty_rows_data:
+        #     print(non_empty_rows_data)
+        #     print(globals.DetectLiveMemberData.get(row[0]))
+        #     if row[0] == "ID":
+        #         continue
+        #     elif( globals.DetectLiveMemberData.get(row[0]) is None):
+        #         data_list = [[key] + list(value.values()) for key, value in globals.DetectLiveMemberData.items()]
+        #         print(data_list)
+        #         # MemberData.append_table(globals.DetectLiveMemberData[i])
+
+    async def SetNewMemberData2Sheet(): 
+        gc = pygsheets.authorize(service_file='./GoogleSheetKey/trusty-fuze-322909-7d29b50ea92c.json')
+        sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/180OzY1HVQw1ucU3w5cqJsHSX5LzbVkonYhfTRzelRJo/edit#gid=0')
+
+        MemberData = sheet.worksheet_by_title("成員資料")
+        SheetData = MemberData.get_all_values()
+        non_empty_rows_data = [row[:1] for row in SheetData if any(cell.strip() for cell in row)]
+        print("[系統訊息] - 正在執行確認是否有新增成員中...")
         print(non_empty_rows_data)
         TempData = {}
         
@@ -230,7 +302,7 @@ class SheetFunction(commands.Cog):
         for row in globals.DetectLiveMemberData.items():
             if TempData.get(str(row[0])) is None:
                 # print(row)
-                data_list = [row[0], row[1]["Level"], row[1]["Exp"], row[1]["Signln"], row[1]["LevelMessage"], row[1]["JoinServerDate"], row[1]["SignInDate"], row[1]["Activity"], row[1]["title"]]
+                data_list = [row[0], row[1]["Level"], row[1]["Exp"], row[1]["Signln"], row[1]["LevelMessage"], row[1]["JoinServerDate"], row[1]["SignInDate"], row[1]["Activity"], row[1]["title"], row[1]["alltitle"], row[1]["image_url"], row[1]["MoraWinNumber"], row[1]["Mission"]]
                 print(f"data_list = {data_list}")
                 data_to_append.append(data_list)
         
@@ -239,6 +311,8 @@ class SheetFunction(commands.Cog):
                 await MemberData.append_table(data_to_append)
             except:
                 print("[備份系統] - 發生錯誤")
+
+        print("[系統訊息] - 結束執行")
         # for row in non_empty_rows_data:
         #     print(non_empty_rows_data)
         #     print(globals.DetectLiveMemberData.get(row[0]))
@@ -267,7 +341,7 @@ class SheetFunction(commands.Cog):
                 # print(f"column_index {column_index}")
                 # print(f"cell_data {cell_data}")
                 rownumber = row_index + 1
-                range_address = f'A{rownumber}:J{rownumber}'
+                range_address = f'A{rownumber}:M{rownumber}'
                 data_list = [cell_data, 
                             globals.DetectLiveMemberData[cell_data]["Level"], 
                             str(globals.DetectLiveMemberData[cell_data]["Exp"]), 
@@ -277,9 +351,13 @@ class SheetFunction(commands.Cog):
                             str(globals.DetectLiveMemberData[cell_data]["SignInDate"]),
                             globals.DetectLiveMemberData[cell_data]["Activity"],
                             globals.DetectLiveMemberData[cell_data]["title"],
-                            globals.DetectLiveMemberData[cell_data]["alltitle"]]
+                            globals.DetectLiveMemberData[cell_data]["alltitle"],
+                            globals.DetectLiveMemberData[cell_data]["image_url"],
+                            globals.DetectLiveMemberData[cell_data]["MoraWinNumber"],
+                            globals.DetectLiveMemberData[cell_data]["Mission"]]
                 print(data_list)
-                MemberData.update_values(crange=range_address, values=[data_list])
+                # MemberData.update_values(crange=range_address, values=[data_list])
+                await asyncio.to_thread(MemberData.update_values, crange=range_address, values=[data_list])  # 使用 asyncio.to_thread 進行非同步操作
                 
         # start_row = 2
         # end_row = 2
@@ -313,12 +391,15 @@ class SheetFunction(commands.Cog):
                     "Level": 1,
                     "Exp": 0,
                     "Signln": "FALSE",
-                    "LevelMessage": "None",
+                    "LevelMessage": "這位小粉絲尚未新增自我介紹喔~!",
                     "JoinServerDate": str(formatted_time),
                     "SignInDate" : 0,
-                    "Activity" : "None",
+                    "Activity" : "尚無活動!",
                     "title" : "",
-                    "alltitle" : ""
+                    "alltitle" : "",
+                    "image_url" : "",
+                    "MoraWinNumber" : 0,
+                    "Mission" : ""
                 }
             print("[系統訊息] - 無此成員資料，已新增至系統內")
         else:
@@ -329,45 +410,70 @@ class SheetFunction(commands.Cog):
 
     # 搜尋影片是否有直播
     async def SearchYoutubeStreamStatus(ChannelID, VideoURL, VideoID, ctx):
-        youtube = build('youtube', 'v3', developerKey="AIzaSyBdXrPPQN2BEelDvWsW_h9Rxtwi0eas79I")
-        response = youtube.videos().list(
-            part='liveStreamingDetails',
-            id=VideoID
-        ).execute()
-        print(f"response = {response}")
-        # print(f"live_streams_response = {live_streams_response}")
-        if 'items' in response:
-            
-            video_info = response['items'][0]
-            if 'liveStreamingDetails' in video_info:
-                if 'actualEndTime' not in video_info['liveStreamingDetails']:
-                    if 'actualStartTime' in video_info['liveStreamingDetails']:
-                        channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
-                        for row in globals.StreamerLiveStatu:
-                            if row[1] == ChannelID:
-                                TagMessage = (
-                                                f"🔴 {row[0]}直播中...\n"
-                                                f"<@&{row[3]}> 正在直播!!\n"
-                                                f"{VideoURL}\n"
-                                            )
-                                await channel2.send(TagMessage)
-                                globals.WillBeDelete.append(VideoID)
-                    else:
-                        if VideoID not in globals.VideoStatus:
-                            globals.VideoStatus[VideoID] = {
-                                # "Name":row[0],
-                                "ChannelID":ChannelID,
-                                "VideoURL":VideoURL
-                            }
-                            channel2 = ctx.guild.get_channel(int(globals.LiveChannelID))
-                            for row in globals.StreamerLiveStatu:
-                                if row[1] == ChannelID:
-                                    TagMessage = (
-                                                    f"🔴 {row[0]}發布了一個新的直播拉...!\n"
-                                                    f"<@&{row[3]}> 即將開始直播!!\n"
-                                                    f"{VideoURL}\n"
-                                                )
-                                    await channel2.send(TagMessage)
+        try:
+            youtube = build('youtube', 'v3', developerKey="AIzaSyBdXrPPQN2BEelDvWsW_h9Rxtwi0eas79I")
+            response = youtube.videos().list(
+                part='liveStreamingDetails',
+                id=VideoID
+            ).execute()
+            print(f"response = {response}")
+            # print(f"live_streams_response = {live_streams_response}")
+            if 'items' in response:
+                if len(response['items']) > 0:
+                    video_info = response['items'][0]
+                    if 'liveStreamingDetails' in video_info:
+                        if 'actualEndTime' not in video_info['liveStreamingDetails']:
+                            if 'actualStartTime' in video_info['liveStreamingDetails']:
+                                if VideoID not in globals.VideoStatus:
+                                    globals.VideoStatus[VideoID] = {    
+                                        # "Name":row[0],
+                                        "ChannelID":ChannelID,
+                                        "VideoURL":VideoURL,
+                                        "StreamStatus":"False"
+                                    }   
+                                if(globals.VideoStatus[VideoID]['StreamStatus'] != "True"):
+                                    for row in globals.StreamerLiveStatu:
+                                        if row[1] == ChannelID:
+                                            channel = ctx.guild.get_channel(int(row[5]))
+                                            globals.VideoStatus[VideoID]['StreamStatus'] = "True"
+                                            # Tagchannel = ctx.guild.get_channel(int(globals.LiveChannelID))
+                                            TagMessage = (
+                                                            f"🔴 {row[0]} 直播中...!\n"
+                                                            f"<@&{row[4]}> <@&1065083845487108096> 直播開始了!! 快來看看吧!!\n"
+                                                            f"{VideoURL}\n"
+                                                        )
+                                            await channel.send(TagMessage)
+                            else:
+                                # print(VideoID)
+                                # print(globals.VideoStatus)
+                                # print(VideoID not in globals.VideoStatus)
+                                if VideoID not in globals.VideoStatus:
+                                    globals.VideoStatus[VideoID] = {    
+                                        # "Name":row[0],
+                                        "ChannelID":ChannelID,
+                                        "VideoURL":VideoURL,
+                                        "StreamStatus":"False"
+                                    }  
+                                    for row in globals.StreamerLiveStatu:
+                                        channel = ctx.guild.get_channel(int(row[5]))
+                                        # Tagchannel = ctx.guild.get_channel(int(globals.LiveChannelID))
+                                        # print(row)
+                                        # print(row[1] == ChannelID)
+                                        if row[1] == ChannelID:
+                                            TagMessage = (
+                                                            f"🟠 {row[0]} 發布了一個新的直播拉...!\n"
+                                                            f"<@&{row[4]}> <@&1065083845487108096> 直播即將開始!! 快進入直播間等待吧!!\n"
+                                                            f"{VideoURL}\n"
+                                                        )
+                                            # await Tagchannel.send(TagMessage)
+                                            await channel.send(TagMessage)
+                        else:
+                            globals.WillBeDelete.append(VideoID)                    
+                else:
+                    globals.WillBeDelete.append(VideoID)
+        except Exception as e:
+            print(e)
+        
 
     # ==================================稱號系統=========================================
     def GetTitle():
@@ -391,6 +497,7 @@ class SheetFunction(commands.Cog):
         except Exception as e:
             print(e)
 
+
     async def SendTitle(titleNumber, LimitTime, ctx):
         isLimit = False
         view = discord.ui.View()
@@ -407,13 +514,20 @@ class SheetFunction(commands.Cog):
                 button.disabled = isLimit
                 await interaction.message.edit(view=view)
             else:
+                print(interaction.user.id)
                 if interaction.user.id not in globals.SetNewMemberTitle:
-                    await ctx.send(f"{interaction.user} 已領取了稱號 [{globals.DetectLiveTitleData[str(titleNumber)]['emoji']} {globals.DetectLiveTitleData[str(titleNumber)]['label']}]")
+                    try:
+                        await ctx.send(f"{interaction.user} 已領取了稱號 **>>>> {globals.DetectLiveTitleData[str(titleNumber)]['emoji']} {globals.DetectLiveTitleData[str(titleNumber)]['label']} <<<<**")
+                    except Exception as e:
+                        print(e)
                     globals.SetNewMemberTitle[interaction.user.id] = {}
 
         button.callback = CB
         view.add_item(button)
-        await ctx.send(f"目前發放稱號為 [{globals.DetectLiveTitleData[str(titleNumber)]['emoji']} {globals.DetectLiveTitleData[str(titleNumber)]['label']}] !!\n限時為 {LimitTime} 分鐘!!", view=view)
+        try:
+            await ctx.send(f"目前發放稱號為 [{globals.DetectLiveTitleData[str(titleNumber)]['emoji']} {globals.DetectLiveTitleData[str(titleNumber)]['label']}] !!\n限時為 {LimitTime} 分鐘!!", view=view)
+        except Exception as e:
+            print(e)
         await asyncio.sleep(int(LimitTime) * 60)
         # await asyncio.sleep(10)
         await ctx.send(f"稱號發放已結束!!")
@@ -422,6 +536,7 @@ class SheetFunction(commands.Cog):
         for row in globals.SetNewMemberTitle:
             print(row)
         await SheetFunction.UpdateMemberTitleNumber(titleNumber)
+
 
     async def NewTitle(emoji, label, description, ctx):
         try:
@@ -451,15 +566,16 @@ class SheetFunction(commands.Cog):
             await ctx.send(f"({globals.DetectLiveTitleData[row]['emoji']} {globals.DetectLiveTitleData[row]['label']}) 的稱號編號為 {row} 號。")
         
     async def UpdateMemberTitleNumber(TitleNumber):
-            found = False
+        try:
             for row in globals.SetNewMemberTitle:
+                found = False
                 numbers = globals.DetectLiveMemberData[str(row)]['alltitle'].split(",")
-                print(f"1 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
-                print(f"numbers = {numbers}")
-                print(f"len(numbers) = {len(numbers)}")
+                # print(f"1 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
+                # print(f"numbers = {numbers}")
+                # print(f"len(numbers) = {len(numbers)}")
                 if(numbers[0] == ''):
                     globals.DetectLiveMemberData[str(row)]['alltitle'] = TitleNumber
-                    print(f"2 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
+                    # print(f"2 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
                 else:
                     for number in numbers:
                         if(number == str(TitleNumber)):
@@ -467,8 +583,29 @@ class SheetFunction(commands.Cog):
                             break
                     if not found:
                         globals.DetectLiveMemberData[str(row)]['alltitle'] += f",{TitleNumber}"
-                        print(f"3 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
-                
+                        # print(f"3 - {globals.DetectLiveMemberData[str(row)]['alltitle']}")
+            print(f"a {globals.SetNewMemberTitle}")
+            globals.SetNewMemberTitle = {}
+            print(f"b {globals.SetNewMemberTitle}")
+        except Exception as e:
+            print(e)
+
+    async def DirectUpdateMemberTitleNumber(TitleNumber, Member):
+        try:
+            found = False
+            numbers = globals.DetectLiveMemberData[str(Member)]['alltitle'].split(",")
+            if(numbers[0] == ''):
+                globals.DetectLiveMemberData[str(Member)]['alltitle'] = TitleNumber
+            else:
+                for number in numbers:
+                    if(number == str(TitleNumber)):
+                        found = True
+                        break
+                if not found:
+                    globals.DetectLiveMemberData[str(Member)]['alltitle'] += f",{TitleNumber}"
+            print(f"稱號新增成功!")
+        except Exception as e:
+            print(e)
 
 async def setup(bot):
     await bot.add_cog(SheetFunction(bot))

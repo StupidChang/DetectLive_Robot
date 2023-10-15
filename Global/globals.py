@@ -12,6 +12,9 @@ ServerID = 0
 global LiveChannelID #Tag大家開直播的頻道
 LiveChannelID = 0
 
+global ExperienceChannelID #有經驗頻道
+ExperienceChannelID = {}
+
 global TwitchLiveChannelID
 TwitchLiveChannelID = 0
 
@@ -23,13 +26,6 @@ streamerYtChannelID = []
 
 global StreamerLiveStatu
 StreamerLiveStatu = []
-
-class Level(Enum):
-    Diamond = 10000
-    Gole = 5000
-    Silver = 2000
-    Bronze  = 1000
-    Iron = 500
 
 global FlaskServer
 FlaskServer = None
@@ -63,3 +59,6 @@ DetectLiveMemberData = {}
 
 global NgrokLocal
 NgrokLocal = ''
+
+global NewMemberList
+NewMemberList = []
