@@ -5,8 +5,11 @@
 
 ## 基本使用:
 main.py為DiscordRobot Kernel
+
 Cogs為放置Commands與Events
+
 Global裡的global.py放置全域變數
+
 Function裡SheetFn.py放置固定Function
 
 ## 使用注意:
