@@ -15,14 +15,23 @@ Function裡SheetFn.py放置固定Function
 ## 使用注意:
 進行Azure機器安裝時需:
 sudo apt update
-sudo apt install python3
+
+sudo apt install python3.9(待測試)
+
 sudo pip install python-dotenv
+
 sudo pip install discord.py
+
 sudo pip install pygsheets
+
 sudo pip install xmltodict
+
 sudo pip install websockets
+
 sudo pip install apscheduler
+
 sudo pip install quart
+
 sudo pip install discord_webhook
 
 1. 需使用sudo運作，以防止1024以下端口權限不足產生錯誤使socket報錯。
