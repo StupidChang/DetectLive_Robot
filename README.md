@@ -4,10 +4,15 @@
 ---
 
 ## 基本使用:
+
 main.py is DiscordRobot Kernel, can load/unload Cogs Commands.
+
 Cogs have Commands and Events.
+
 Can use +Load to load Commands's Command.
+
 Global have global.py, this file place any global variable. 
+
 Function have SheetFn.py,place fixed Function.
 
 ## 使用注意:
