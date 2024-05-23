@@ -14,6 +14,7 @@ Function裡SheetFn.py放置固定Function
 
 ## 使用注意:
 進行Azure機器安裝時需:
+
 sudo apt update
 
 sudo apt install python3.9(待測試)
@@ -34,7 +35,7 @@ sudo pip install quart
 
 sudo pip install discord_webhook
 
-1. 需使用sudo運作，以防止1024以下端口權限不足產生錯誤使socket報錯。
+1. 需使用sudo運作，以防止1024以下端口權限不足產生錯誤使socket報錯(sudo nohup python3 main.py &)。
 2. 運作後續使用{ sudo sh -c 'echo -1000 > /proc/[pid]/oom_score_adj' }指令來禁止oom程序kill。
 3. +SetNgrokLocal http://[ip] 指令設定位址時須注意後面不能有"反斜線"。
 
