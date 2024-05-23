@@ -4,13 +4,11 @@
 ---
 
 ## 基本使用:
-main.py為DiscordRobot Kernel
-
-Cogs為放置Commands與Events
-
-Global裡的global.py放置全域變數
-
-Function裡SheetFn.py放置固定Function
+main.py is DiscordRobot Kernel, can load/unload Cogs Commands.
+Cogs have Commands and Events.
+Can use +Load to load Commands's Command.
+Global have global.py, this file place any global variable. 
+Function have SheetFn.py,place fixed Function.
 
 ## 使用注意:
 進行Azure機器安裝時需:
