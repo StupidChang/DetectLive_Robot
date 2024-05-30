@@ -20,7 +20,7 @@ Function have SheetFn.py,place fixed Function.
 
 sudo apt update
 
-sudo apt install python3.9(待測試)
+sudo apt install python3.11(待測試)
 
 sudo pip install python-dotenv
 
