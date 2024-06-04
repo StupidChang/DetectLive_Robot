@@ -1,6 +1,7 @@
 # DetectLive_Robot
 *一隻自製Discord機器人的秘密*
 
+以Discord.py為基底
 ---
 
 ## 基本使用:
