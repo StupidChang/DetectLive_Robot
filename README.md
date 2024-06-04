@@ -46,4 +46,5 @@ sudo pip install discord_webhook
 ps aux | grep "python3 main.py" | grep -v grep
 
 scp -i Discord_key.pem -r [路徑] azureuser@20.127.165.218:/home/discordRobot/
+
 scp -i Discord_key.pem [路徑] azureuser@20.127.165.218:~/discordRobot/
