@@ -42,9 +42,17 @@ sudo pip install quart
 
 sudo pip install discord_webhook
 
-1. 需使用sudo運作，以防止1024以下端口權限不足產生錯誤使socket報錯{ (sudo nohup python3 main.py & }。
-2. 運作後續使用{ sudo sh -c 'echo -1000 > /proc/[pid]/oom_score_adj' }指令來禁止oom程序kill，利用{ cat /proc/[pid]/oom_score_adj }確認。
-3. +SetNgrokLocal http://[ip] 指令設定位址時須注意後面不能有"反斜線"。
+1. 使用sudo運作
+  1. 需使用sudo運作，以防止1024以下端口權限不足產生錯誤使socket報錯{ sudo nohup python3 main.py & }。
+  2. 運作後續使用{ sudo sh -c 'echo -1000 > /proc/[pid]/oom_score_adj' }指令來禁止oom程序kill，利用{ cat /proc/[pid]/oom_score_adj }確認。
+  3. +SetNgrokLocal http://[ip] 指令設定位址時須注意後面不能有"反斜線"。
+
+2. 使用screen運作
+  1. screen -S mysession 創建一個screen對話名稱為mysession
+  2. sudo python3 main.py 直接運行
+  3. 按下 Ctrl+A 然後按下 D。這將會把您從當前 screen 會話中分離出來，並返回到您的原始終端，而 screen 會話會在後台繼續運行。
+  4. screen -r mysession 重新連接會話
+  5. screen -ls 查看所有會話
 
 ---
 
