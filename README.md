@@ -54,6 +54,32 @@ sudo pip install discord_webhook
     4. screen -r mysession 重新連接會話
     5. screen -ls 查看所有會話
 
+## 掛載分區:
+```
+# 檢查Swap狀態，如果沒有Swap就不會有任何輸出資料。使用檢查記憶體使用狀況的free也能看到Swap，如果沒有設置則會看到Swap那行顯示0。
+sudo swapon --show
+# 建立一塊保留空間
+sudo fallocate -l 1G /swapfile
+
+# 設置讀寫權限
+sudo chmod 600 /swapfile
+
+# 建立Swap空間
+sudo mkswap /swapfile
+# Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)
+# no label, UUID=b3b91233-6a5b-44d3-9d13-d7c66285a166
+
+#啟動Swap空間
+sudo swapon /swapfile
+
+sudo swapon --show
+# NAME      TYPE  SIZE  USED PRIO
+# /swapfile file 1024M 20.3M   -2
+
+# 修改設定為10，立即生效，從0到100，數字越高越積極使用Swap。但可以降低，非必要不用使用Swap降低速度。
+sudo sysctl vm.swappiness=10
+```
+
 ---
 
 ## 其他:
