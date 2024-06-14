@@ -17,8 +17,6 @@ Global have global.py, this file place any global variable.
 
 Function have SheetFn.py,place fixed Function.
 
----
-
 ## 使用注意:
 進行Azure機器安裝時需:
 
@@ -54,7 +52,7 @@ sudo pip install discord_webhook
     4. screen -r mysession 重新連接會話
     5. screen -ls 查看所有會話
 
-## 掛載分區:
+## Swap掛載分區:
 ```
 # 檢查Swap狀態，如果沒有Swap就不會有任何輸出資料。使用檢查記憶體使用狀況的free也能看到Swap，如果沒有設置則會看到Swap那行顯示0。
 sudo swapon --show
@@ -79,7 +77,7 @@ sudo swapon --show
 # 修改設定為10，立即生效，從0到100，數字越高越積極使用Swap。但可以降低，非必要不用使用Swap降低速度。
 sudo sysctl vm.swappiness=10
 ```
-
+https://klab.tw/2022/06/what-is-linux-swap-and-how-to-add-it/
 ---
 
 ## 其他:
